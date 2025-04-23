@@ -17,11 +17,11 @@ class ServerlessStack(TerraformStack):
         super().__init__(scope, id)
         AwsProvider(self, "AWS", region="us-east-1")
 
-        account_id = DataAwsCallerIdentity(self, "acount_id").account_id
+        account_id = DataAwsCallerIdentity(self, "account_id").account_id
         
         bucket = S3Bucket(
             self, "bucket",
-            bucket_prefix=""
+            bucket_prefix="bucketpostagramensai"
         )
 
         # NE PAS TOUCHER !!!!
@@ -37,29 +37,29 @@ class ServerlessStack(TerraformStack):
 
         dynamo_table = DynamodbTable(
             self, "DynamodDB-table",
-            name= "",
-            hash_key="",
-            range_key="",
+            name= "Dynamo_table",
+            hash_key="user",
+            range_key="id",
             attribute=[
-                DynamodbTableAttribute(name="",type="S" ),
-                DynamodbTableAttribute(name="",type="S" ),
+                DynamodbTableAttribute(name="user",type="S" ),
+                DynamodbTableAttribute(name="id",type="S" ),
             ],
             billing_mode="PROVISIONED",
             read_capacity=5,
             write_capacity=5
         )
-
+'''
         code = TerraformAsset()
 
         lambda_function = LambdaFunction(
             self, "lambda",
-            function_name="",
+            function_name="first_lambda",
             runtime="python3.10",
             memory_size=128,
             timeout=60,
-            role=f"",
+            role=f"arn:aws:iam::147552475298:role/LabRole",
             filename= code.path,
-            handler="",
+            handler="lambda_function.lambda_handler",
             environment={"variables":{}}
         )
 
@@ -85,7 +85,7 @@ class ServerlessStack(TerraformStack):
             bucket=bucket.id,
             depends_on=[permission]
         )
-
+'''
 
 
 app = App()
